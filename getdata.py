@@ -8,4 +8,8 @@ if len(sys.argv) > 1:
     soup = BeautifulSoup(html)
     table_one = soup.find_all('table')[0]
     rows = table_one.find_all('tr')
-    print len(rows)
+    for r in rows:
+        cells = r.find_all('td')
+        print cells[2].get_text()
+        if len(cells) > 3       :
+            print cells[3].get_text()
