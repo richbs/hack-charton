@@ -11,14 +11,14 @@ if len(sys.argv) > 1:
     outfile = open('out.html', 'w')
     for r in rows:
         for c in r.find_all('td'):
-            f = c.find('font')
+            bgcol = None
             division = None
             txt = None
+            if 'bgcolor' in c.attrs:
+                bgcol = c.attrs["bgcolor"]
+            f = c.find('font')
             if f and "color" in f.attrs:
-                bgcol = None
                 col = f.attrs["color"]
-                if "bgcolor" in f.parent.attrs:
-                    bgcol = f.parent.attrs["bgcolor"]
                 txt = f.text.replace(u'\xa0', '')
                 if col == "#FF0000" or bgcol == "#FF0000":
                     division = "1"
@@ -27,17 +27,18 @@ if len(sys.argv) > 1:
                         bgcol in ("#339933", "#008000"):
                     division = "2"
                     region = None
-                elif col == "#0000FF" or bgcol == "#0000FF":
+                elif col in ("#0000FF", "#3366FF", "#3333CC") or \
+                        bgcol in ("#0000FF", "#3366FF", "#3333CC"):
                     division = "3"
                     region = None
                 elif col in ("#993366", "#800080") or \
-                        bgcol == ("#993366", "#800080"):
+                        bgcol in ("#993366", "#800080"):
                     division = "3"
                     region = 'North'
                 elif col == "#000000" or bgcol == "#000000":
                     division = "4"
                     region = None
-            elif 'bgcolor' not in c.attrs:
+            elif bgcol is None or bgcol == "#FFFFFF":
                     division = "4"
                     region = None
                     txt = c.text.replace(u'\xa0', '')
