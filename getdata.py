@@ -23,8 +23,8 @@ if len(sys.argv) > 1:
                 if col == "#FF0000" or bgcol == "#FF0000":
                     division = "1"
                     region = None
-                elif col in ("#339933", "#008000") or \
-                        bgcol in ("#339933", "#008000"):
+                elif col in ("#339933", "#336666", "#008000") or \
+                        bgcol in ("#339933", "#336666", "#008000"):
                     division = "2"
                     region = None
                 elif col in ("#0000FF", "#3366FF", "#3333CC") or \
