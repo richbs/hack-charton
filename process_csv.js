@@ -51,10 +51,15 @@ var transform = csv.transform(function(row, callback){
         }
       }
     });
-    //console.log(JSON.stringify(clubObject));
-    callback(err, JSON.stringify(clubObject));
-
-
+    var clubString = JSON.stringify(clubObject);
+    var filename = clubName.replace(/\s+/, '-' ).toLowerCase() + '.json';
+    fs.writeFile(filename, clubString, function(err) {
+      if(err) {
+          return console.log(err);
+      }
+      console.log("The " + filename + " was saved!");
+    });
+    callback(err, clubString);
   }
   count++;
 });
