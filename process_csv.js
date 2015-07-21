@@ -12,8 +12,8 @@ var transform = csv.transform(function(row, callback){
   clubName = row[row.length-1];
   if (count === 0) {
     headers = row;
-  } else if (row[0].match(/Clubs|Season/i) || row[1].match(/Season|Clubs/i) || row[0] === '') {
-
+  } else if (row[0].match(/Clubs|Season/i) ||
+             row[1].match(/Season|Clubs/i) || row[0] === '') {
   } else {
     var clubObject = {
       years:[]
@@ -33,10 +33,8 @@ var transform = csv.transform(function(row, callback){
         s = position.split('.');
         if (s.length !== 2) {
           if (s[0] !== '') {
-            console.log(row[0], row[0].match(/Clubs|Season/i), row[1], row[1].match(/Season|Clubs/i));
-
+            console.log(row[0], row[1]);
           }
-
         } else {
           clubObject.years.push(
             {
@@ -57,7 +55,7 @@ var transform = csv.transform(function(row, callback){
       if(err) {
           return console.log(err);
       }
-      console.log("The " + filename + " was saved!");
+      console.log('The ' + filename + ' was saved!');
     });
     callback(err, clubString);
   }
@@ -68,6 +66,6 @@ input
   .pipe(parse)
   .pipe(transform)
   //.pipe(process.stdout)
-  .once('finish',function() {
+  .once('Finish', function() {
       console.log('done');
   });
