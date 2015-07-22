@@ -6,6 +6,7 @@ var input = fs.createReadStream(process.argv[2]);
 var parse = csv.parse();
 var count = 0;
 var headers = [];
+seasons = {};
 
 var transform = csv.transform(function(row, callback){
   err = null;
@@ -33,16 +34,33 @@ var transform = csv.transform(function(row, callback){
         s = position.split('.');
         if (s.length !== 2) {
           if (s[0] !== '') {
-            console.log(row[0], row[1]);
+            console.log('No position', row[0], row[1]);
           }
         } else {
+          var division = parseInt(s[0]);
+          var position = parseInt(s[1]);
+
+          if (seasons[fullYear] === undefined) {
+            seasons[fullYear] = {};
+          }
+
+          if (seasons[fullYear][division] === undefined) {
+              seasons[fullYear][division] = {};
+              seasons[fullYear][division].teams = {};
+              seasons[fullYear][division].teams[position] = clubName;
+              seasons[fullYear][division].count = 1;
+          } else {
+              seasons[fullYear][division].count++;
+              seasons[fullYear][division].teams[position] = clubName;
+          }
+
           clubObject.years.push(
             {
               year: fullYear,
               name: clubName,
               leaguePosition: {
-                division: parseInt(s[0]),
-                position: parseInt(s[1])
+                division: division,
+                position: position
               }
             }
           );
@@ -51,7 +69,7 @@ var transform = csv.transform(function(row, callback){
     });
     var clubString = JSON.stringify(clubObject);
     var filename = clubName.replace(/\s+/, '-' ).toLowerCase() + '.json';
-    fs.writeFile(filename, clubString, function(err) {
+    fs.writeFile('./out/' + filename, clubString, function(err) {
       if(err) {
           return console.log(err);
       }
@@ -66,6 +84,8 @@ input
   .pipe(parse)
   .pipe(transform)
   //.pipe(process.stdout)
-  .once('Finish', function() {
+  .once('finish', function() {
+      console.log(JSON.stringify(seasons));
+      // TODO: Checksum seasons and team counts
       console.log('done');
   });
