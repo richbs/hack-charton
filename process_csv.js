@@ -6,7 +6,7 @@ var input = fs.createReadStream(process.argv[2]);
 var parse = csv.parse();
 var count = 0;
 var headers = [];
-seasons = {};
+seasons = [];
 
 var transform = csv.transform(function(row, callback){
   err = null;
@@ -46,12 +46,12 @@ var transform = csv.transform(function(row, callback){
 
           if (seasons[fullYear][division] === undefined) {
               seasons[fullYear][division] = {};
-              seasons[fullYear][division].teams = {};
-              seasons[fullYear][division].teams[position] = clubName;
+              seasons[fullYear][division].teams = [];
+              seasons[fullYear][division].teams.push(clubName);
               seasons[fullYear][division].count = 1;
           } else {
               seasons[fullYear][division].count++;
-              seasons[fullYear][division].teams[position] = clubName;
+              seasons[fullYear][division].teams.push(clubName);
           }
 
           clubObject.years.push(
@@ -73,7 +73,7 @@ var transform = csv.transform(function(row, callback){
       if(err) {
           return console.log(err);
       }
-      console.log('The ' + filename + ' was saved!');
+      //console.log('The ' + filename + ' was saved!');
     });
     callback(err, clubString);
   }
@@ -85,7 +85,16 @@ input
   .pipe(transform)
   //.pipe(process.stdout)
   .once('finish', function() {
-      console.log(JSON.stringify(seasons));
+      seasons.forEach(function(season, i) {
+        //console.log(i, season);
+        for (var div in season) {
+          if (season.hasOwnProperty(div)){
+            division = season[div];
+            console.log(i, div, division.count, division.teams.length);
+          }
+        }
+      });
+      //console.log(JSON.stringify(seasons, null, 2));
       // TODO: Checksum seasons and team counts
       console.log('done');
   });
